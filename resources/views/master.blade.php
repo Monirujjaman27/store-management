@@ -78,7 +78,7 @@
       <!-- Menu -->
       <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
         <div class="app-brand demo">
-          <a href="index.html" class="app-brand-link">
+          <a href="{{route('dashboard.index')}}" class="app-brand-link">
             <span class="app-brand-logo demo">
               <?php
               $data = App\Models\AdminSetting::get();
@@ -106,7 +106,7 @@
 
         <ul class="menu-inner py-1">
 
-          <li class="menu-item {{Request::route()->getName() == 'dashboard.index' || request()->is('customers*') ? 'active':''}}">
+          <li class="menu-item {{Request::route()->getName() == 'dashboard.index' ? 'active':''}}">
             <a href="{{route('dashboard.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-home"></i>
               <div>Dashboard</div>
@@ -206,10 +206,25 @@
               </li>
             </ul>
           </li>
+          <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">System & Profile</span>
+          </li>
           <li class="menu-item {{Request::route()->getName() == 'settings.index' ? 'active':''}}">
             <a href="{{route('settings.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-settings"></i>
               <div>Settings</div>
+            </a>
+          </li>
+          <li class="menu-item {{request()->is('profile*')  ? 'active':''}}">
+            <a href="{{route('manager.edit',auth()->user()->id)}}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-user"></i>
+              <div>Profile</div>
+            </a>
+          </li>
+          <li class="menu-item ">
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-power"></i>
+              <div>Logout</div>
             </a>
           </li>
         </ul>
@@ -263,27 +278,24 @@
             <ul class="navbar-nav flex-row align-items-center ms-auto">
               <!-- Language -->
 
-
-
-              <!-- User -->
+              <!--👉 User -->
               <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                   <div class="avatar avatar-online">
-                    <img src="{{asset('/')}}assets/img/avatars/1.png" alt class="h-auto rounded-circle" />
+                    <img src="{{ Auth::user()->profile ?  asset(Auth::user()->profile) : asset('assets/img/avatars/1.png') }}" alt="" class="h-auto rounded-circle">
                   </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <a class="dropdown-item" href="{{route('manager.edit',1)}}">
+                    <a class="dropdown-item">
                       <div class="d-flex">
                         <div class="flex-shrink-0 me-3">
                           <div class="avatar avatar-online">
-                            <img src="{{asset('/')}}assets/img/avatars/1.png" alt class="h-auto rounded-circle" />
+                            <img src="{{ Auth::user()->profile ?  asset(Auth::user()->profile) : asset('assets/img/avatars/1.png') }}" alt="{{Auth::user()->profile}}" class="h-auto rounded-circle">
                           </div>
                         </div>
                         <div class="flex-grow-1">
-                          <span class="fw-medium d-block">John Doe</span>
-                          <small class="text-muted">Admin</small>
+                          <span class="fw-semibold d-block text-capitalize"> @if (Auth::check()) {{ Auth::user()->name }} @else John Doe @endif</span>
                         </div>
                       </div>
                     </a>
@@ -292,7 +304,7 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="{{route('manager.edit',1)}}">
+                    <a class="dropdown-item" href="{{route('manager.edit',auth()->user()->id)}}">
                       <i class="ti ti-user-check me-2 ti-sm"></i>
                       <span class="align-middle">My Profile</span>
                     </a>
@@ -307,12 +319,24 @@
                   <li>
                     <div class="dropdown-divider"></div>
                   </li>
+                  @if (Auth::check())
                   <li>
-                    <a class="dropdown-item" href="auth-login-cover.html" target="_blank">
-                      <i class="ti ti-logout me-2 ti-sm"></i>
-                      <span class="align-middle">Log Out</span>
+                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                      <i class='ti ti-logout me-2'></i>
+                      <span class="align-middle">Logout</span>
                     </a>
                   </li>
+                  <form method="POST" id="logout-form" action="{{ route('logout') }}">
+                    @csrf
+                  </form>
+                  @else
+                  <li>
+                    <a class="dropdown-item" href="{{ Route::has('login') ? route('login') : url('auth/login-basic') }}">
+                      <i class='ti ti-login me-2'></i>
+                      <span class="align-middle">Login</span>
+                    </a>
+                  </li>
+                  @endif
                 </ul>
               </li>
               <!--/ User -->
