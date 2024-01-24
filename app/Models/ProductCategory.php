@@ -17,6 +17,6 @@ class ProductCategory extends Model
     // realtion for child category
     function child_category()
     {
-        return $this->hasMany(ProductCategory::class, 'parent_category_id', 'id')->select('id', 'name');
+        return $this->hasMany(ProductCategory::class, 'parent_category_id', 'id')->select('id', 'parent_category_id', 'name');
     }
 }

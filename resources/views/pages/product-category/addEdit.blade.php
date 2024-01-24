@@ -30,16 +30,25 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             <select name="parent_category" id="parent_category" class="select2 form-select form-control">
                                 <option value="">Select</option>
                                 @foreach($categories as $item)
-                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                <option {{ isset($data) && $item->id == $data->parent_category_id ? 'selected':'' }} value="{{$item->id}}">{{$item->name}}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label w-100" for="image">Image
-                                @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
-                            </label>
-                            <input id="image" name="image" class="form-control" type="file" />
+                            <div class="row">
+                                <div class="{{isset($data) ? 'col-8':'col-12'}}">
+                                    <label class="form-label w-100" for="image">Image
+                                        @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
+                                    </label>
+                                    <input id="image" name="image" class="form-control" type="file" accept="image/*" />
+                                </div>
+                                @if(isset($data))
+                                <div class="col-4">
+                                    <img src="{{asset($data->image)}}" width="100" class="float-end" alt="">
+                                </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     <div class="col-12 text-left">

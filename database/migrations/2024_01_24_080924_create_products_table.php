@@ -20,7 +20,8 @@ return new class extends Migration
             $table->boolean('is_offer')->default(STATUS_FALSE);
             $table->double('offer_price')->nullable();
             $table->double('stock_quantity')->nullable();
-            $table->double('alert_quantity')->nullable();
+            $table->double('sales_quantity')->nullable();
+            $table->double('stock_alert_quantity')->nullable();
             $table->string('images')->nullable()->comment('we will add json data into string');
             $table->boolean('status')->default(STATUS_TRUE);
             $table->longText('details')->nullable();

@@ -1,7 +1,7 @@
 @extends('master')
 @section('content')
 <?php
-$route = 'customers';
+$route = 'products';
 $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
 ?>
 @if(isset($data)) @php $form_action = route("$route.update", $data->id); @endphp @else @php $form_action = route("$route.store"); @endphp @endif
@@ -24,37 +24,45 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             </label>
                             <input id="name" name="name" @if(isset($data)) value="{{ $data->name }}" @else value="{{ old('name') }}" @endif placeholder="Name" class="form-control" type="text" />
                         </div>
-                        <div class="form-group">
-                            <label class="form-label w-100" for="email">email
-                                @if($errors->has('email')) <span class="text-danger"> {{$errors->first('email')}}</span> @endif
-                            </label>
-                            <input id="email" name="email" @if(isset($data)) value="{{ $data->email }}" @else value="{{ old('email') }}" @endif placeholder="email" class="form-control" type="email" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label w-100" for="Gender">Gender @if($errors->has('gender'))<span class="text-danger"> {{$errors->first('gender')}}</span> @endif</label>
-                            <select name="gender" id="Gender" class="select2 form-select form-control">
+                        <div class="form-group my-3">
+                            <label class="form-label w-100" for="category">category @if($errors->has('category'))<span class="text-danger"> {{$errors->first('category')}}</span> @endif</label>
+                            <select name="category" id="category" class="select2 form-select form-control">
                                 <option value="">Select</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                @foreach($categories as $item)
+                                <option {{ isset($data) && $item->id == $data->category_id ? 'selected':'' }} value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label w-100" for="phone">phone
-                                @if($errors->has('phone')) <span class="text-danger"> {{$errors->first('phone')}}</span> @endif
-                            </label>
-                            <input id="phone" name="phone" @if(isset($data)) value="{{ $data->phone }}" @else value="{{ old('phone') }}" @endif placeholder="phone" class="form-control" type="number" />
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label w-100" for="purchase_price">purchase_price
+                                        @if($errors->has('purchase_price')) <span class="text-danger"> {{$errors->first('purchase_price')}}</span> @endif
+                                    </label>
+                                    <input id="purchase_price" name="purchase_price" @if(isset($data)) value="{{ $data->purchase_price }}" @else value="{{ old('purchase_price') }}" @endif placeholder="purchase_price" class="form-control" type="number" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label w-100" for="address">sales_price
+                                        @if($errors->has('sales_price')) <span class="text-danger"> {{$errors->first('sales_price')}}</span> @endif
+                                    </label>
+                                    <input id="sales_price" name="sales_price" @if(isset($data)) value="{{ $data->sales_price }}" @else value="{{ old('sales_price') }}" @endif placeholder="sales_price" class="form-control" type="number" />
+                                </div>
+                            </div>
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label w-100" for="address">address
-                                @if($errors->has('address')) <span class="text-danger"> {{$errors->first('address')}}</span> @endif
-                            </label>
-                            <input id="address" name="address" @if(isset($data)) value="{{ $data->address }}" @else value="{{ old('address') }}" @endif placeholder="address" class="form-control" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label w-100" for="image">Profile
+                            <label class="form-label w-100" for="image">Image
                                 @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
                             </label>
-                            <input id="image" name="image" class="form-control" type="file" />
+                            <input id="image" name="image" class="form-control" multiple type="file" accept="image/*" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label w-100" for="image">Product Details
+                                @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
+                            </label>
+                            <textarea name="details" id="" class="form-control" placeholder="Details" cols="30" rows="2"></textarea>
                         </div>
                     </div>
                     <div class="col-12 text-left">

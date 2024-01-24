@@ -148,8 +148,8 @@ class ProductCategoryController extends Controller
             $data = $this->model->find($id);
             if (!$data) return error_message('data Not found');
             $data->name     = $request->name;
-            $data->parent_category_id = $request->has('parent_category') && isset($request->parent_category['value']) ? $request->parent_category['value'] : null;
-            if ($request->image) $data->image = fileUpload($request->image, 'product/category', $data->image);
+            $data->parent_category_id = $request->has('parent_category') ? $request->parent_category : null;
+            if ($request->image) $data->image = fileUpload($request->image, $this->upload_file_path, $data->image);
             $data->save();
             DB::commit();
             notify()->success("Updated Successfully");
@@ -170,8 +170,10 @@ class ProductCategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $data =  $this->model->find($id)->delete();
-            if ($data->medicine->count() > 0) return error_message("Unable to delete data against the relation.");
+            $data =  $this->model->with('child_category')->find($id);
+            if (!$data) return error_message('data Not Found');
+            if ($data->child_category->count() > 0) return error_message("Unable to delete data against the relation.");
+            $data->delete();
             notify()->success("Delete Successfully");
             return back();
         } catch (Exception $e) {

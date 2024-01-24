@@ -43,14 +43,16 @@ $route = 'customers';
                     <td>{{$item->phone}}</td>
                     <td>{{$item->gender}}</td>
                     <td>{{$item->address}}</td>
-                    <td class="d-flex">
+                  <td>
+                        <div class="d-flex">
                         <a class="btn btn-sm btn-primary" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i></a>
 
                         <form action='{{ route("$route.destroy",$item->id)}}' method="post">
                             @csrf
                             @method('DELETE')
                             <button onclick="return confirm('Are you sure to delete')" type="submit" class="btn btn-sm btn-danger text-danger"><i class="bi bi-trash"></i></button>
-                        </form>
+                      </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

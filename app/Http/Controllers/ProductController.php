@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    
+
     public $model;
     public $routename;
     public $tamplate;
@@ -52,6 +54,13 @@ class ProductController extends Controller
      */
     public function create()
     {
+
+        try {
+            $categories = ProductCategory::select('id', 'name', 'parent_category_id')->get();
+            return view("$this->tamplate.addEdit", compact('categories'));
+        } catch (\Throwable $e) {
+            return error_message('Database Exception Error', $e->getMessage(), $e->getCode());
+        }
     }
 
 

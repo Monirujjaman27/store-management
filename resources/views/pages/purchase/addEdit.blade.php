@@ -54,7 +54,7 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             <label class="form-label w-100" for="image">Profile
                                 @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
                             </label>
-                            <input id="image" name="image" class="form-control" type="file" />
+                            <input id="image" name="image" class="form-control" type="file" accept="image/*" />
                         </div>
                     </div>
                     <div class="col-12 text-left">

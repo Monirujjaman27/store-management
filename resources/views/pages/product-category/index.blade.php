@@ -24,9 +24,7 @@ $route = 'product-category';
                 <tr>
                     <th>#ID</th>
                     <th>Name</th>
-                    <th>Phone</th>
-                    <th>Gender</th>
-                    <th>Address</th>
+                    <th>Parent Category</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -36,21 +34,20 @@ $route = 'product-category';
                     <td>{{$item->id}}</td>
                     <td>
                         <div class="d-flex">
-                            <img width="40px" class="rounded-circle" src="{{asset($item->avater)}}" alt="">
+                            <img width="40px" class="rounded-circle" src="{{asset($item->image)}}" alt="">
                             {{$item->name}}
                         </div>
                     </td>
-                    <td>{{$item->phone}}</td>
-                    <td>{{$item->gender}}</td>
-                    <td>{{$item->address}}</td>
-                    <td class="d-flex">
-                        <a class="btn btn-sm btn-primary" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i></a>
-
-                        <form action='{{ route("$route.destroy",$item->id)}}' method="post">
-                            @csrf
-                            @method('DELETE')
-                            <button onclick="return confirm('Are you sure to delete')" type="submit" class="btn btn-sm btn-danger text-danger"><i class="bi bi-trash"></i></button>
-                        </form>
+                    <td>{{ $item->parent_category ? $item->parent_category->name :'N/A'}}</td>
+                    <td>
+                        <div class="d-flex">
+                            <a class="btn btn-sm btn-primary" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i></a>
+                            <form action='{{ route("$route.destroy",$item->id)}}' method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button onclick="return confirm('Are you sure to delete')" type="submit" class="btn btn-sm btn-danger text-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach
