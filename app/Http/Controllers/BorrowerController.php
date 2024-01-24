@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Borrower;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BorrowerController extends Controller
 {
@@ -27,7 +28,21 @@ class BorrowerController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = $this->model->latest()->paginate($request->item ?? 10);
+            $data = $this->model
+                ->when($request, function ($q) use ($request) {
+                    if ($request->date_range) {
+                        return $q->whereBetween('created_at', date_range_search($request->date_range));
+                    }
+                })
+
+                ->when($request->search_query, function ($q) use ($request) {
+                    $searchQuery = '%' . $request->search_query . '%';
+                    return $q->where('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('address', 'LIKE', $searchQuery)
+                        ->orWhere('phone', 'LIKE', $searchQuery);
+                })
+
+                ->paginate($request->item ?? 10);
             return view("$this->tamplate.index", compact('data'));
         } catch (\Throwable $th) {
             // dd($th);

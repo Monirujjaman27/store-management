@@ -1,18 +1,84 @@
 @extends('master')
 @section('content')
 <?php
-$route = 'borrowers';
+$route = 'borrower-transection';
 ?>
-
 <div class="row g-4 mb-4">
     <div class="col-sm-6 col-xl-3">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-start justify-content-between">
                     <div class="content-left">
-                        <span>Total {{$route}} </span>
+                        <span>Total Transection</span>
                         <div class="d-flex align-items-center my-2">
-                            <h3 class="mb-0 me-2">{{$data->total()}}</h3>
+                            <h3 class="mb-0 me-2"><?php echo App\Models\BorrowerTransectionHistorey::select('id')->count() ?></h3>
+                        </div>
+                    </div>
+                    <div class="avatar">
+                        <span class="avatar-initial rounded bg-label-primary">
+                            <i class="ti ti-user ti-sm"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="content-left">
+                        <span>Credit Transection</span>
+                        <div class="d-flex align-items-center my-2">
+                            <h3 class="mb-0 me-2">(<?php echo App\Models\BorrowerTransectionHistorey::select('type')->where('type', 'credit')->count() ?>)</h3>
+                            <p class="text-success mb-0">
+                                <?php $credit = App\Models\BorrowerTransectionHistorey::select('type', 'transection_amount')->where('type', 'credit')->sum('transection_amount');
+                                echo $credit;
+                                ?>TK</p>
+
+                        </div>
+                    </div>
+                    <div class="avatar">
+                        <span class="avatar-initial rounded bg-label-primary">
+                            <i class="ti ti-user ti-sm"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="content-left">
+                        <span>Debit Transection</span>
+                        <div class="d-flex align-items-center my-2">
+                            <h3 class="mb-0 me-2">(<?php echo App\Models\BorrowerTransectionHistorey::select('type')->where('type', 'debit')->count() ?>)</h3>
+                            <p class="text-success mb-0">
+                                <?php $debit = App\Models\BorrowerTransectionHistorey::select('type', 'transection_amount')->where('type', 'debit')->sum('transection_amount');
+                                echo $debit;
+                                ?>TK</p>
+
+                        </div>
+                    </div>
+                    <div class="avatar">
+                        <span class="avatar-initial rounded bg-label-primary">
+                            <i class="ti ti-user ti-sm"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="content-left">
+                        <span>Net Amount</span>
+                        <div class="d-flex align-items-center my-2">
+                            <p class="text-success mb-0"><?php echo $debit - $credit  ?? 0 ?>TK</p>
                         </div>
                     </div>
                     <div class="avatar">
@@ -63,13 +129,11 @@ $route = 'borrowers';
                 <tr>
                     <th>#ID</th>
                     <th>Actions</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Present lends</th>
-                    <th>Total lends</th>
-                    <th>Total Return</th>
-                    <th>Gender</th>
-                    <th>Address</th>
+                    <th>Borrower</th>
+                    <th>type</th>
+                    <th>transection id</th>
+                    <th>amount</th>
+                    <th>note</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,19 +153,11 @@ $route = 'borrowers';
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <div class="d-flex">
-                            <img width="40px" class="rounded-circle" src="{{asset($item->avater)}}" alt="">
-                            {{$item->name}}
-                        </div>
-                    </td>
-                    <td>{{$item->phone}}</td>
-                    <td>{{$item->present_lends_amount}}</td>
-                    <td>{{$item->total_lends}}</td>
-                    <td>{{$item->total_return}}</td>
-                    <td>{{$item->gender}}</td>
-                    <td>{{$item->address}}</td>
-
+                    <td>{{$item->borrower->name}}</td>
+                    <td>{{$item->type}}</td>
+                    <td>{{$item->transection_id}}</td>
+                    <td>{{$item->transection_amount}}</td>
+                    <td>{{$item->note}}</td>
                 </tr>
                 @endforeach
             </tbody>

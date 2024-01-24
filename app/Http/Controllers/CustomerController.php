@@ -30,7 +30,18 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = $this->model->latest()->paginate($request->item ?? 10);
+            $data = $this->model->when($request, function ($q) use ($request) {
+                return $q->orderBy('id', $request->has('orderBy') ? $request->order_by : 'desc');
+            })
+                ->when($request, function ($q) use ($request) {
+                    if ($request->date_range) {
+                        return $q->whereBetween('created_at', date_range_search($request->date_range));
+                    }
+                })
+                ->when($request->search_query, function ($q) use ($request) {
+                    return $q->where('name', 'LIKE', '%' . $request->search_query . '%')
+                        ->orWhere('phone', 'LIKE', '%' . $request->search_query . '%');
+                })->latest()->paginate($request->item ?? 10);
             return view("$this->tamplate.index", compact('data'));
         } catch (\Throwable $th) {
             // dd($th);

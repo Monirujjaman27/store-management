@@ -41,6 +41,12 @@
   <!-- Form Validation -->
   <link rel="stylesheet" href="{{asset('/')}}assets/vendor/libs/@form-validation/umd/styles/index.min.css" />
 
+
+  <link rel="stylesheet" href="{{asset('assets/vendor/libs/flatpickr/flatpickr.css')}}" />
+
+  <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+  <link rel="stylesheet" href="../../assets/vendor/libs/bootstrap-select/bootstrap-select.css" />
+
   <!-- Page CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 
@@ -52,11 +58,11 @@
   <script src="{{asset('/')}}assets/vendor/js/template-customizer.js"></script>
   <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
   <script src="{{asset('/')}}assets/js/config.js"></script>
+  <link rel="stylesheet" href="{{asset('/')}}assets/css/custom.css" />
   @notifyCss
-  <script src="{{asset('/')}}assets/css/custom.css"></script>
   <style>
     .notify {
-      z-index: 99999999999999999 !important;
+      z-index: 9999999 !important;
     }
 
     label {
@@ -74,16 +80,22 @@
         <div class="app-brand demo">
           <a href="index.html" class="app-brand-link">
             <span class="app-brand-logo demo">
+              <?php
+              $data = App\Models\AdminSetting::get();
+              ?>
+              @if($data->where('slug','site_name')->first())
+              <img src="{{$data->where('slug','site_logo')->first()->value}}" alt="Logo">
+              @else
               <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z" fill="#7367F0" />
                 <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z" fill="#161616" />
                 <path opacity="0.06" fill-rule="evenodd" clip-rule="evenodd" d="M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z" fill="#161616" />
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z" fill="#7367F0" />
               </svg>
+              @endif
             </span>
-            <span class="app-brand-text demo menu-text fw-bold">Vuexy</span>
+            <span class="app-brand-text demo menu-text fw-bold">{{$data->where('slug','site_name')->first() ? $data->where('slug','site_name')->first()->value : 'Vuexy'}}</span>
           </a>
-
           <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
             <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
             <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
@@ -94,8 +106,13 @@
 
         <ul class="menu-inner py-1">
 
-
-          <li class="menu-item  {{request()->is('products*') ? 'open active' :''}}">
+          <li class="menu-item {{Request::route()->getName() == 'dashboard.index' || request()->is('customers*') ? 'active':''}}">
+            <a href="{{route('dashboard.index')}}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-home"></i>
+              <div>Dashboard</div>
+            </a>
+          </li>
+          <li class="menu-item  {{request()->is('products*') || request()->is('product-category*') ? 'open active' :''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <i class="menu-icon tf-icons ti ti-layout-grid"></i>
               <div>Products</div>
@@ -118,7 +135,6 @@
               </li>
             </ul>
           </li>
-          <!-- Misc -->
           <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Customers</span>
           </li>
@@ -131,59 +147,70 @@
           </li>
           <li class="menu-item {{Request::route()->getName() == 'suppliers.index' || request()->is('suppliers*') ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-users"></i>
+              <i class="menu-icon tf-icons ti ti-brand-superhuman"></i>
               <div>Suppliers</div>
             </a>
           </li>
           <li class="menu-item {{Request::route()->getName() == 'purchase.index' || request()->is('purchase*') ? 'active':''}}">
             <a href="{{route('purchase.index')}}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-users"></i>
+              <i class="menu-icon tf-icons ti ti-building-store"></i>
               <div>Purchase</div>
             </a>
           </li>
           <li class="menu-item {{Request::route()->getName() == 'sale.index' ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-users"></i>
+              <i class="menu-icon tf-icons ti ti-report-analytics"></i>
               <div>Sale</div>
             </a>
           </li>
           <li class="menu-item {{Request::route()->getName() == 'sale.index' || request()->is('suppliers*') ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
-              <i class="menu-icon tf-icons ti ti-users"></i>
+              <i class="menu-icon tf-icons ti ti-report-money"></i>
               <div>Report</div>
             </a>
           </li>
+          <!-- Misc -->
+          <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">lends Management</span>
+          </li>
+
           <!-- //active open -->
-          <li class="menu-item  {{request()->is('borrowers*') ? 'open active' :''}}">
+          <li class="menu-item  {{request()->is('borrowers*') ||  request()->is('borrower-transection*') ? 'open active' :''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <i class="menu-icon tf-icons ti ti-layout-grid"></i>
               <div>Money Management</div>
             </a>
             <ul class="menu-sub">
-              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.index' ? 'active':''}}">
                 <a href="{{route('borrowers.index')}}" class="menu-link">
                   <div>Borrowers</div>
                 </a>
               </li>
-              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
-                <a href="{{route('borrowers.index')}}" class="menu-link">
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.create' ? 'active':''}}">
+                <a href="{{route('borrowers.create')}}" class="menu-link">
                   <i class="menu-icon tf-icons ti ti-layout-grid"></i>
                   <div>
                     New Borrower
                   </div>
                 </a>
               </li>
-              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
-                <a href="{{route('borrowers.index')}}" class="menu-link">
+              <li class="menu-item {{Request::route()->getName() == 'borrower-transection.index' ? 'active':''}}">
+                <a href="{{route('borrower-transection.index')}}" class="menu-link">
                   <div>Transections</div>
                 </a>
               </li>
-              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
-                <a href="{{route('borrowers.index')}}" class="menu-link">
+              <li class="menu-item {{Request::route()->getName() == 'borrower-transection.create' ? 'active':''}}">
+                <a href="{{route('borrower-transection.create')}}" class="menu-link">
                   <div>New Transection</div>
                 </a>
               </li>
             </ul>
+          </li>
+          <li class="menu-item {{Request::route()->getName() == 'settings.index' ? 'active':''}}">
+            <a href="{{route('settings.index')}}" class="menu-link">
+              <i class="menu-icon tf-icons ti ti-settings"></i>
+              <div>Settings</div>
+            </a>
           </li>
         </ul>
       </aside>
@@ -247,7 +274,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <a class="dropdown-item" href="pages-account-settings-account.html">
+                    <a class="dropdown-item" href="{{route('manager.edit',1)}}">
                       <div class="d-flex">
                         <div class="flex-shrink-0 me-3">
                           <div class="avatar avatar-online">
@@ -265,13 +292,13 @@
                     <div class="dropdown-divider"></div>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="pages-profile-user.html">
+                    <a class="dropdown-item" href="{{route('manager.edit',1)}}">
                       <i class="ti ti-user-check me-2 ti-sm"></i>
                       <span class="align-middle">My Profile</span>
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="pages-account-settings-account.html">
+                    <a class="dropdown-item" href="{{route('settings.index')}}">
                       <i class="ti ti-settings me-2 ti-sm"></i>
                       <span class="align-middle">Settings</span>
                     </a>
@@ -358,11 +385,21 @@
   <!-- endbuild -->
   <!-- Vendors JS -->
   <script src="{{asset('/')}}assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+  <script src="../../assets/vendor/libs/select2/select2.js"></script>
+
+  <script src="../../assets/vendor/libs/bootstrap-select/bootstrap-select.js"></script>
+
+  <script src="{{asset('assets/vendor/libs/moment/moment.js')}}"></script>
+  <script src="{{asset('assets/vendor/libs/flatpickr/flatpickr.js')}}"></script>
+
   <!-- Flat Picker -->
   <script src="{{asset('/')}}assets/vendor/libs/moment/moment.js"></script>
 
   <x-notify::notify />
   @notifyJs
+  <script src="{{asset('/')}}assets/js/forms-pickers.js"></script>
+  <script src="../../assets/js/forms-selects.js"></script>
+
   <!-- Main JS -->
   <script src="{{asset('/')}}assets/js/main.js"></script>
 </body>

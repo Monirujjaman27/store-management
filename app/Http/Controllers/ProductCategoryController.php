@@ -33,12 +33,17 @@ class ProductCategoryController extends Controller
         try {
             $data = $this->model->with('parent_category', 'child_category')
                 ->when($request, function ($q) use ($request) {
-                    return $q->orderBy('id', $request->has('orderBy') ? $request->orderBy : 'desc');
+                    return $q->orderBy('id', $request->has('orderBy') ? $request->order_by : 'desc');
                 })
-                ->when($request->searchQuery, function ($q) use ($request) {
-                    return $q->where('name', 'LIKE', '%' . $request->searchQuery . '%');
+                ->when($request, function ($q) use ($request) {
+                    if ($request->date_range) {
+                        return $q->whereBetween('created_at', date_range_search($request->date_range));
+                    }
                 })
-                ->latest()->paginate($request->itemsPerPage ?? 10);
+                ->when($request->search_query, function ($q) use ($request) {
+                    return $q->where('name', 'LIKE', '%' . $request->search_query . '%');
+                })
+                ->latest()->paginate($request->item ?? 10);
             return view("$this->tamplate.index", compact('data'));
         } catch (Exception $e) {
             // 👉// 👉=======handle DB exception error==========

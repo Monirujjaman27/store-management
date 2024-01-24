@@ -1,8 +1,8 @@
 
-
-label {
-    text-transform: capitalize !important;
-}
+/*
+* custom.css
+* File include item demo only specific css only
+******************************************************************************/
 
 /* ====================data table paginateion================= */
 .data_table_pagination svg {
