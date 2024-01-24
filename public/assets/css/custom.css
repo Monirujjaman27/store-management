@@ -1,0 +1,40 @@
+.notify {
+    z-index: 99999999999999999 !important;
+}
+
+label {
+    text-transform: capitalize !important;
+}
+
+/* ====================data table paginateion================= */
+.data_table_pagination svg {
+    width: 25px !important;
+}
+
+.table-responsive {
+    min-height: 300px !important;
+}
+
+.dataTables_info,
+.dataTables_paginate,
+.data_table_pagination nav .flex.justify-between.flex-1.sm\:hidden {
+    display: none;
+}
+
+.data_table_pagination nav a,
+.data_table_pagination svg {
+
+    margin-left: -1px;
+}
+
+/* .data_table_pagination nav .cursor-default {
+    background-color: #242c6d !important;
+    border-color: #242c6d !important;
+    color: #ffffff;
+    margin-left: -1px;
+} */
+span[aria-current="page"] .cursor-default {
+    background-color: #685dd8 !important;
+    color: #fff !important;
+    margin-left: -1px;
+}
