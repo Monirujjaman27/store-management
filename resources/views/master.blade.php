@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  <title>DataTables - Tables | Vuexy - Bootstrap Admin Template</title>
+  <title>Small Business Application for Rabbi</title>
 
   <meta name="description" content="" />
 
@@ -95,7 +95,7 @@
         <ul class="menu-inner py-1">
 
 
-          <li class="menu-item ">
+          <li class="menu-item  {{request()->is('products*') ? 'open active' :''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <i class="menu-icon tf-icons ti ti-layout-grid"></i>
               <div>Products</div>
@@ -111,7 +111,7 @@
                   <div>List</div>
                 </a>
               </li>
-              <li class="menu-item {{Request::route()->getName() == 'product-category.index' ? 'active':''}}">
+              <li class="menu-item {{Request::route()->getName() == 'product-category.index' || request()->is('product-category*') ? 'active':''}}">
                 <a href="{{route('product-category.index')}}" class="menu-link">
                   <div>Category</div>
                 </a>
@@ -123,19 +123,19 @@
             <span class="menu-header-text">Customers</span>
           </li>
 
-          <li class="menu-item {{Request::route()->getName() == 'customers.index' ? 'active':''}}">
+          <li class="menu-item {{Request::route()->getName() == 'customers.index' || request()->is('customers*') ? 'active':''}}">
             <a href="{{route('customers.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-users"></i>
               <div>Customers</div>
             </a>
           </li>
-          <li class="menu-item {{Request::route()->getName() == 'suppliers.index' ? 'active':''}}">
+          <li class="menu-item {{Request::route()->getName() == 'suppliers.index' || request()->is('suppliers*') ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-users"></i>
               <div>Suppliers</div>
             </a>
           </li>
-          <li class="menu-item {{Request::route()->getName() == 'purchase.index' ? 'active':''}}">
+          <li class="menu-item {{Request::route()->getName() == 'purchase.index' || request()->is('purchase*') ? 'active':''}}">
             <a href="{{route('purchase.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-users"></i>
               <div>Purchase</div>
@@ -147,22 +147,40 @@
               <div>Sale</div>
             </a>
           </li>
-          <li class="menu-item {{Request::route()->getName() == 'sale.index' ? 'active':''}}">
+          <li class="menu-item {{Request::route()->getName() == 'sale.index' || request()->is('suppliers*') ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-users"></i>
               <div>Report</div>
             </a>
           </li>
           <!-- //active open -->
-          <li class="menu-item ">
+          <li class="menu-item  {{request()->is('borrowers*') ? 'open active' :''}}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <i class="menu-icon tf-icons ti ti-layout-grid"></i>
               <div>Money Management</div>
             </a>
             <ul class="menu-sub">
-              <li class="menu-item {{Request::route()->getName() == 'customers.indexd' ? 'active':''}}">
-                <a href="{{route('customers.index')}}" class="menu-link">
-                  <div>List</div>
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
+                <a href="{{route('borrowers.index')}}" class="menu-link">
+                  <div>Borrowers</div>
+                </a>
+              </li>
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
+                <a href="{{route('borrowers.index')}}" class="menu-link">
+                  <i class="menu-icon tf-icons ti ti-layout-grid"></i>
+                  <div>
+                    New Borrower
+                  </div>
+                </a>
+              </li>
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
+                <a href="{{route('borrowers.index')}}" class="menu-link">
+                  <div>Transections</div>
+                </a>
+              </li>
+              <li class="menu-item {{Request::route()->getName() == 'borrowers.indexd' ? 'active':''}}">
+                <a href="{{route('borrowers.index')}}" class="menu-link">
+                  <div>New Transection</div>
                 </a>
               </li>
             </ul>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BorrowerController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
+use Monolog\Handler\BrowserConsoleHandler;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +30,9 @@ Route::resource('/customers', CustomerController::class);
 Route::resource('/suppliers', SupplierController::class);
 Route::resource('/purchase', PurchaseController::class);
 Route::resource('/sale', SaleController::class);
+
+
+
+
+// money management 
+Route::resource('/borrowers', BorrowerController::class);

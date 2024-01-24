@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Purchase;
-use App\Models\Supplier;
+use App\Models\Borrower;
 use Illuminate\Http\Request;
 
-class PurchaseController extends Controller
+class BorrowerController extends Controller
 {
     public $model;
-    public $modelName;
     public $routename;
     public $table;
     public $tamplate;
-    public $upload_file_path;
     public function __construct()
     {
-        $this->model = new Purchase();
-        $this->modelName = "Purchase";
-        $this->routename = "purchases.index";
-        $this->table = "purchases";
-        $this->tamplate = "pages.purchase";
-        $this->upload_file_path = "upload/$this->table/avater";
+        $this->model = new Borrower();
+        $this->routename = "borrowers.index";
+        $this->table = "borrowers";
+        $this->tamplate = "pages.borrower";
     }
 
     /**
@@ -48,9 +42,7 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $product = Product::select('id', 'name', 'sku')->get();
-        $supplier = Supplier::select('id', 'name')->get();
-        return view("$this->tamplate.addEdit", compact('product', 'supplier'));
+        return view("$this->tamplate.addEdit");
     }
 
     /**
@@ -63,7 +55,8 @@ class PurchaseController extends Controller
     {
         $request->validate([
             'name' => "required|unique:$this->table,name",
-            'phone' => 'required'
+            'phone' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:512', // image rule with allowed mime types and maximum size
         ]);
         try {
             $data = $this->model;
@@ -73,7 +66,7 @@ class PurchaseController extends Controller
             $data->gender = $request->gender;
             $data->address = $request->address;
             $data->phone = $request->phone;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, $this->upload_file_path);
+            if ($request->has('image')) $data->avater = fileUpload($request->image, 'upload/customer/avater');
             $data->save();
             notify()->success("Created Successfully");
             return redirect()->route("$this->routename");
@@ -130,20 +123,19 @@ class PurchaseController extends Controller
     {
         $request->validate([
             'name' => "required|unique:$this->table,name,$id",
-            'phone' => 'required'
+            'phone' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:512', // image rule with allowed mime types and maximum size
         ]);
         try {
             // dd($request->all());
-
             $data = $this->model->find($id);
             if (!$data) return error_message('Data Not found');
             $data->name = $request->name;
-            $data->name = $request->name;
             $data->email = $request->email;
+            $data->phone = $request->phone;
             $data->gender = $request->gender;
             $data->address = $request->address;
-            $data->phone = $request->phone;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, $this->upload_file_path, $data->avater);
+            if ($request->has('image')) $data->avater = fileUpload($request->image, 'upload/customer/avater', $data->avater);
             $data->save();
             notify()->success("Updated Successfully");
             return redirect()->route("$this->routename");

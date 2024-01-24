@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -32,10 +33,9 @@ class ProductController extends Controller
         // 👉
         // if (!auth()->user()->can('Managers')) return error_message('You Have No Access Permission', 'Unauthorize permissons', 403);
         try {
-            $data = $this->model->with('parent_category', 'child_category')
-                ->when($request, function ($q) use ($request) {
-                    return $q->orderBy('id', $request->has('orderBy') ? $request->orderBy : 'desc');
-                })
+            $data = $this->model->when($request, function ($q) use ($request) {
+                return $q->orderBy('id', $request->has('orderBy') ? $request->orderBy : 'desc');
+            })
                 ->when($request->searchQuery, function ($q) use ($request) {
                     return $q->where('name', 'LIKE', '%' . $request->searchQuery . '%');
                 })
@@ -54,9 +54,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-
         try {
-            $categories = ProductCategory::select('id', 'name', 'parent_category_id')->get();
+            $categories = ProductCategory::select('id', 'name', 'parent_category_id')->where(['parent_category_id' => null])->get();
             return view("$this->tamplate.addEdit", compact('categories'));
         } catch (\Throwable $e) {
             return error_message('Database Exception Error', $e->getMessage(), $e->getCode());
@@ -72,10 +71,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         // 👉 CHACK Validation
         $request->validate([
-            'name'             => "required|unique:$this->db_table,name",
-            'parent_category'  => "nullable|array",
+            'name'      => "required|unique:$this->db_table,name",
+            'category'  => "required|int",
+            'purchase_price'  => "required|int",
+            'sales_price'  => "required|int",
+            // 'image' => 'image|mimes:jpeg,png,jpg,gif|max:512', // image rule with allowed mime types and maximum size
         ]);
 
         DB::beginTransaction();
@@ -83,16 +86,31 @@ class ProductController extends Controller
             // 👉=============save data================
             $data = $this->model;
             $data->name  = $request->name;
-            $data->parent_category_id = $request->has('parent_category') ? $request->parent_category : null;
-            if ($request->image) $data->image = fileUpload($request->image, $this->upload_file_path);
+            $data->category_id = $request->has('category') ? $request->category : null;
+            $data->purchase_price = $request->purchase_price;
+            $data->sales_price = $request->sales_price;
+            if ($request->has('is_offer') && $request->is_offer == 1) {
+                $data->is_offer = $request->is_offer;
+                $data->offer_price = $request->offer_price;
+            }
+            $data->details = $request->details;
+            // 👉======= handle Image Upload ==========
+            if ($request->images && count($request->images) > 0) {
+                $images = [];
+                foreach ($request->images as $key => $img_item) {
+                    $images[] = fileUpload($img_item, 'product/images');
+                }
+                $data->images =  json_encode($images);
+            }
             $data->save();
             DB::commit();
             notify()->success("Created Successfully");
             return redirect()->route("$this->routename");
-        } catch (Exception $e) {
+        } catch (\Throwable $th) {
+            dd($th);
             DB::rollBack();
             // 👉=======handle DB exception error==========
-            return error_message('Database Exception Error', $e->getMessage(), $e->getCode());
+            return error_message('Database Exception Error', $th->getMessage(), $th->getCode());
         }
     }
 
@@ -110,7 +128,24 @@ class ProductController extends Controller
             return error_message('Database Exception Error', $e->getMessage(), $e->getCode());
         }
     }
-
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        try {
+            $categories = ProductCategory::select('id', 'name', 'parent_category_id')->where('id', '!=', $id)->where(['parent_category_id' => null])->get();
+            $data = $this->model->find($id);
+            if (!$data) return abort(404);
+            return view("$this->tamplate.addEdit", compact('data', 'categories'));
+        } catch (\Throwable $th) {
+            notify()->warning($th->getMessage());
+            return back();
+        }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -123,9 +158,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name'  => "required|unique:$this->db_table,name,$id",
-            'parent_category'  => "nullable|array",
-            'branche'          => "nullable|array",
-            'warehouse'        => "nullable|array",
+            'parent_category'  => "nullable|int",
         ]);
 
         try {
@@ -134,8 +167,8 @@ class ProductController extends Controller
             $data = $this->model->find($id);
             if (!$data) return error_message('data Not found');
             $data->name     = $request->name;
-            $data->parent_category_id = $request->has('parent_category') && isset($request->parent_category['value']) ? $request->parent_category['value'] : null;
-            if ($request->image) $data->image = fileUpload($request->image, 'product/category', $data->image);
+            $data->parent_category_id = $request->has('parent_category') ? $request->parent_category : null;
+            if ($request->images) $data->image = fileUpload($request->images, $this->upload_file_path, $data->image);
             $data->save();
             DB::commit();
             notify()->success("Updated Successfully");
@@ -156,8 +189,10 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            $data =  $this->model->find($id)->delete();
-            if ($data->medicine->count() > 0) return error_message("Unable to delete data against the relation.");
+            $data =  $this->model->with('child_category')->find($id);
+            if (!$data) return error_message('data Not Found');
+            if ($data->child_category->count() > 0) return error_message("Unable to delete data against the relation.");
+            $data->delete();
             notify()->success("Delete Successfully");
             return back();
         } catch (Exception $e) {

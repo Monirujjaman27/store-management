@@ -1,7 +1,7 @@
 @extends('master')
 @section('content')
 <?php
-$route = 'suppliers';
+$route = 'purchase';
 ?>
 <div class="card">
     <div class="card-header">

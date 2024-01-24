@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->reference('id')->on('product_categories');
+            $table->string('sku', 6)->unique();
             $table->string('name');
             $table->double('purchase_price');
             $table->double('sales_price');

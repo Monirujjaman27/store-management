@@ -36,28 +36,53 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label w-100" for="purchase_price">purchase_price
+                                    <label class="form-label w-100" for="purchase_price">purchase price
                                         @if($errors->has('purchase_price')) <span class="text-danger"> {{$errors->first('purchase_price')}}</span> @endif
                                     </label>
-                                    <input id="purchase_price" name="purchase_price" @if(isset($data)) value="{{ $data->purchase_price }}" @else value="{{ old('purchase_price') }}" @endif placeholder="purchase_price" class="form-control" type="number" />
+                                    <input id="purchase_price" name="purchase_price" @if(isset($data)) value="{{ $data->purchase_price }}" @else value="{{ old('purchase_price') }}" @endif placeholder="purchase price" class="form-control" type="number" />
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label class="form-label w-100" for="address">sales_price
+                                    <label class="form-label w-100" for="address">sales price
                                         @if($errors->has('sales_price')) <span class="text-danger"> {{$errors->first('sales_price')}}</span> @endif
                                     </label>
-                                    <input id="sales_price" name="sales_price" @if(isset($data)) value="{{ $data->sales_price }}" @else value="{{ old('sales_price') }}" @endif placeholder="sales_price" class="form-control" type="number" />
+                                    <input id="sales_price" name="sales_price" @if(isset($data)) value="{{ $data->sales_price }}" @else value="{{ old('sales_price') }}" @endif placeholder="sales price" class="form-control" type="number" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row py-3">
+                                <div class="col-4">
+                                    <label class="form-label w-100" for="is_offer">is has offer Price
+                                        <input type="checkbox" class="form-check-input" name="is_offer" value="1" id="is_offer">
+                                    </label>
+                                </div>
+                                <div class="col-8">
+                                    <label class="form-label w-100" for="image">offer price
+                                        @if($errors->has('offer_price')) <span class="text-danger"> {{$errors->first('offer_price')}}</span> @endif
+                                    </label>
+                                    <input id="offer_price" name="offer_price" @if(isset($data)) value="{{ $data->offer_price }}" @else value="{{ old('offer_price') }}" @endif placeholder="offer price" class="form-control" type="number" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label w-100" for="image">Image
-                                @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
-                            </label>
-                            <input id="image" name="image" class="form-control" multiple type="file" accept="image/*" />
+                            <div class="row">
+                                <div class="{{isset($data) ? 'col-8':'col-12'}}">
+                                    <label class="form-label w-100" for="images">Image
+                                        @if($errors->has('images')) <span class="text-danger"> {{$errors->first('images')}}</span> @endif
+                                    </label>
+                                    <input id="images" name="images[]" class="form-control" type="file" accept="images/*" multiple />
+                                </div>
+                                @if(isset($data))
+                                <div class="col-4">
+                                    <img src="{{asset($data->image)}}" width="100" class="float-end" alt="">
+                                </div>
+                                @endif
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label class="form-label w-100" for="image">Product Details
                                 @if($errors->has('image')) <span class="text-danger"> {{$errors->first('image')}}</span> @endif
