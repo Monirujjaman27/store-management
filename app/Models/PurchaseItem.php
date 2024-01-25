@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Purchase extends Model
+class PurchaseItem extends Model
 {
     use HasFactory;
     protected $guarded = [];
@@ -13,8 +13,8 @@ class Purchase extends Model
     {
         return $this->belongsTo(Supplier::class)->select('id', 'name');
     }
-    function purchase_items()
+    function product()
     {
-        return $this->hasMany(PurchaseItem::class);
+        return $this->belongsTo(Product::class);
     }
 }

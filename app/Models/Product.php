@@ -11,7 +11,14 @@ class Product extends Model
 {
     use HasFactory;
     protected $guarded = [];
-
+    function sales_items()
+    {
+        return $this->hasMany(SalesItem::class);
+    }
+    function purchase_items()
+    {
+        return $this->hasMany(PurchaseItem::class);
+    }
     public static function boot()
     {
         parent::boot();

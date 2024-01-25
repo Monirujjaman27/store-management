@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseController extends Controller
 {
@@ -19,7 +21,7 @@ class PurchaseController extends Controller
     {
         $this->model = new Purchase();
         $this->modelName = "Purchase";
-        $this->routename = "purchases.index";
+        $this->routename = "purchase.index";
         $this->table = "purchases";
         $this->tamplate = "pages.purchase";
         $this->upload_file_path = "upload/$this->table/avater";
@@ -33,10 +35,23 @@ class PurchaseController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = $this->model->latest()->paginate($request->item ?? 10);
+            $data = $this->model->with('supplier', 'purchase_items')
+                ->when($request, function ($q) use ($request) {
+                    if ($request->date_range) {
+                        return $q->whereBetween('created_at', date_range_search($request->date_range));
+                    }
+                })
+
+                ->when($request->search_query, function ($q) use ($request) {
+                    $searchQuery = '%' . $request->search_query . '%';
+                    return $q->where('total', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('inv_no', 'LIKE', '%' . $searchQuery . '%');
+                })
+                ->latest()->paginate($request->item ?? 10);
+            // dd($data);
             return view("$this->tamplate.index", compact('data'));
         } catch (\Throwable $th) {
-            // dd($th);
+            dd($th);
             notify()->warning($th->getMessage());
             return back();
         }
@@ -48,7 +63,7 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $product = Product::select('id', 'name', 'sku')->get();
+        $product = Product::select('id', 'name', 'sku', 'purchase_price', 'sales_price')->get();
         $supplier = Supplier::select('id', 'name')->get();
         return view("$this->tamplate.addEdit", compact('product', 'supplier'));
     }
@@ -62,22 +77,39 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => "required|unique:$this->table,name",
-            'phone' => 'required'
+            'supplier' => "required|int",
+            'product_id' => "required|array",
         ]);
+        DB::beginTransaction();
         try {
             $data = $this->model;
-            $data->name = $request->name;
-            $data->name = $request->name;
-            $data->email = $request->email;
-            $data->gender = $request->gender;
-            $data->address = $request->address;
-            $data->phone = $request->phone;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, $this->upload_file_path);
+            $data->inv_no = "inv_" . time();
+            $data->supplier_id = $request->supplier;
+            $data->total = $request->total;
+            $data->subtotal = $request->total;
             $data->save();
-            notify()->success("Created Successfully");
+            foreach ($request->product_id as $index => $item) {
+                $product = Product::where('id', $item)->first();
+                if ($product) {
+                    $product->stock_quantity =  $product->stock_quantity += $request->qty[$index];
+                    $product->save();
+                    PurchaseItem::create([
+                        'purchase_id' => $data->id,
+                        'supplier_id' => $data->supplier_id,
+                        'product_id' => $item,
+                        'batch' => $request->batch_no[$index],
+                        'qty' => $request->qty[$index],
+                        'sale_price' => $request->sales_price[$index],
+                        'purchase_price' => $request->purchase_price[$index],
+                        'total_price' => $request->subtotal[$index],
+                    ]);
+                }
+            }
+            DB::commit();
+            notify()->success("Purchase Successfully");
             return redirect()->route("$this->routename");
         } catch (\Throwable $th) {
+            DB::rollBack();
             notify()->warning($th->getMessage());
             return back();
         }
@@ -92,8 +124,46 @@ class PurchaseController extends Controller
     public function show($id)
     {
         try {
-            // $this->model->find($id)->update(['status' => DB::raw("IF(status = 1, 0 ,1)")]);
-            // notify()->success("Delete Successfully");
+            $data = Purchase::with('supplier', 'purchase_items', 'purchase_items.product')->find($id);
+
+            if (!$data) return error_message('data Not Found');
+            return view("$this->tamplate.invoice", compact('data'));
+        } catch (\Throwable $th) {
+            notify()->warning($th->getMessage());
+            return back();
+        }
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function print_invoice($id)
+    {
+        try {
+            $data = Purchase::with('supplier', 'purchase_items', 'purchase_items.product')->find($id);
+
+            if (!$data) return error_message('data Not Found');
+            return view("$this->tamplate.print", compact('data'));
+        } catch (\Throwable $th) {
+            notify()->warning($th->getMessage());
+            return back();
+        }
+    }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete_purchase_item($id)
+    {
+        try {
+            $data = PurchaseItem::find($id);
+            if (!$data) return error_message('data Not Found');
+            $data->delete();
+            notify()->success("Delete Successfully");
             return back();
         } catch (\Throwable $th) {
             notify()->warning($th->getMessage());
@@ -110,9 +180,11 @@ class PurchaseController extends Controller
     public function edit($id)
     {
         try {
-            $data = $this->model->find($id);
-            if (!$data) return abort(404);
-            return view("$this->tamplate.addEdit", compact('data'));
+            $data = Purchase::with('purchase_items', 'purchase_items.product')->find($id);
+            if (!$data) return error_message('data Not Found');
+            $product = Product::select('id', 'name', 'sku', 'purchase_price', 'sales_price')->get();
+            $supplier = Supplier::select('id', 'name')->get();
+            return view("$this->tamplate.addEdit", compact('product', 'supplier', 'data'));
         } catch (\Throwable $th) {
             notify()->warning($th->getMessage());
             return back();
@@ -129,25 +201,51 @@ class PurchaseController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => "required|unique:$this->table,name,$id",
-            'phone' => 'required'
+            'supplier' => "required|int",
+            'product_id' => "required|array",
         ]);
+        DB::beginTransaction();
         try {
-            // dd($request->all());
-
             $data = $this->model->find($id);
-            if (!$data) return error_message('Data Not found');
-            $data->name = $request->name;
-            $data->name = $request->name;
-            $data->email = $request->email;
-            $data->gender = $request->gender;
-            $data->address = $request->address;
-            $data->phone = $request->phone;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, $this->upload_file_path, $data->avater);
+            if (!$data) return error_message('data not Found');
+            $data->supplier_id = $request->supplier;
+            $data->total = $request->total;
+            $data->subtotal = $request->total;
             $data->save();
-            notify()->success("Updated Successfully");
+
+            $purchase_item = PurchaseItem::where(['purchase_id' => $data->id, 'supplier_id' => $data->supplier_id])->get();
+            foreach ($purchase_item as $key => $p_item) {
+                $product = Product::where('id', $p_item->product_id)->first();
+                if ($product) {
+                    $product->stock_quantity =  $product->stock_quantity -= $p_item->qty;
+                    $product->save();
+                }
+                $p_item->delete();
+            }
+
+            foreach ($request->product_id as $index => $item) {
+                $product = Product::where('id', $item)->first();
+                if ($product) {
+                    $product->stock_quantity =  $product->stock_quantity += $request->qty[$index];
+                    $product->save();
+                    PurchaseItem::create([
+                        'purchase_id' => $data->id,
+                        'supplier_id' => $data->supplier_id,
+                        'product_id' => $item,
+                        'batch' => $request->batch_no[$index],
+                        'qty' => $request->qty[$index],
+                        'sale_price' => $request->sales_price[$index],
+                        'purchase_price' => $request->purchase_price[$index],
+                        'total_price' => $request->subtotal[$index],
+                    ]);
+                }
+            }
+            DB::commit();
+            notify()->success("Purchase Successfully");
             return redirect()->route("$this->routename");
         } catch (\Throwable $th) {
+            dd($th);
+            DB::rollBack();
             notify()->warning($th->getMessage());
             return back();
         }
@@ -162,8 +260,8 @@ class PurchaseController extends Controller
     public function destroy($id)
     {
         try {
-            $data  = $this->model->with('manager', 'customer', 'sub_zone')->find($id);
-            if ($data->upazila->count() > 0 | $data->customer->count() > 0 | $data->sub_zone->count() > 0) return error_message('data cannot be delete');
+            $data  = $this->model->with('purchase_items')->find($id);
+            if ($data->purchase_items->count() > 0) return error_message('data cannot be delete when present relation chind data');
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

@@ -1,7 +1,7 @@
 @extends('master')
 @section('content')
 <?php
-$route = 'purchase';
+$route = 'sale';
 $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
 ?>
 @if(isset($data)) @php $form_action = route("$route.update", $data->id); @endphp @else @php $form_action = route("$route.store"); @endphp @endif
@@ -31,11 +31,11 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
-                                <label class="form-label w-100" for="supplier">Supplier @if($errors->has('supplier'))<span class="text-danger"> {{$errors->first('supplier')}}</span> @endif</label>
-                                <select required name="supplier" id="supplier" class="select2 form-select form-select-lg" data-allow-clear="true">
+                                <label class="form-label w-100" for="customer">customers @if($errors->has('customer'))<span class="text-danger"> {{$errors->first('customer')}}</span> @endif</label>
+                                <select required name="customer" id="customer" class="select2 form-select form-select-lg" data-allow-clear="true">
                                     <option value="">Select</option>
-                                    @foreach($supplier as $suplier_item)
-                                    <option {{isset($data) && $data->supplier_id == $suplier_item->id ? 'selected':''}} value="{{$suplier_item->id}}">{{$suplier_item->name}}</option>
+                                    @foreach($customer as $cmr_item)
+                                    <option {{isset($data) && $data->customer_id == $cmr_item->id ? 'selected':''}} value="{{$cmr_item->id}}">{{$cmr_item->name}} {{" | $cmr_item->phone"}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -46,7 +46,7 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             <select name="product" id="product" class="select2 form-select form-select-lg" data-allow-clear="true">
                                 <option value="">Select</option>
                                 @foreach($product as $p_item)
-                                <option value="{{$p_item}}">{{$p_item->sku}} | {{$p_item->name}}</option>
+                                <option value="{{$p_item}}">{{"SKU: $p_item->sku"}} | {{$p_item->name}} {{$p_item->stock_quantity ? "| Abaliable: $p_item->stock_quantity" :''}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -56,30 +56,24 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             <thead>
                                 <tr>
                                     <th>name</th>
-                                    <th>batch no</th>
-                                    <th>purchase price</th>
-                                    <th>Sale price</th>
-                                    <th>Quentaty</th>
+                                    <th>price</th>
+                                    <th>Abaliable Quentaty</th>
+                                    <th>Purchase Quentaty</th>
                                     <th>total</th>
                                     <th> <i class="menu-icon tf-icons ti ti-settings"></i></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if(isset($data))
-                                @foreach($data->purchase_items as $purchanse_item)
-
+                                @foreach($data->sale_items as $s_item)
                                 <tr>
-                                    <td class="productName"> {{$purchanse_item->product->name}} <input class="productName form-control" hidden required name="product_id[]" placeholder="Product Name" value="{{$purchanse_item->product_id}}" /></td>
+                                    <td class="productName"> {{$s_item->product->name}} <input class="productName form-control" hidden required name="product_id[]" placeholder="Product Name" value="{{$s_item->product_id}}" /></td>
+                                    <td><input class="price form-control" required name="price[]" placeholder="price" value="{{$s_item->price}}" type="number" /></td>
 
-                                    <td><input class="batch_no form-control" required name="batch_no[]" placeholder="batch no" value="{{$purchanse_item->batch}}" /></td>
+                                    <td><input class="abaliable_qty form-control" required name="abaliable_qty[]" value="{{$s_item->product->stock_quantity}}" disabled placeholder="abaliable qty" type="number" /></td>
+                                    <td><input class="qty form-control" required name="qty[]" placeholder="qty" value="{{$s_item->qty}}" type="number" /></td>
 
-                                    <td><input class="purchase_price form-control" required name="purchase_price[]" placeholder="purchase_price" value="{{$purchanse_item->purchase_price}}" type="number" /></td>
-
-                                    <td><input class="sales_price form-control" required name="sales_price[]" placeholder="sales_price" value="{{$purchanse_item->sale_price}}" type="number" /></td>
-
-                                    <td><input class="qty form-control" required name="qty[]" placeholder="qty" value="{{$purchanse_item->qty}}" type="number" /></td>
-
-                                    <td><input class="subtotal form-control" readonly name="subtotal[]" placeholder="subtotal" value="{{$purchanse_item->total_price}}" type="number" /></td>
+                                    <td><input class="subtotal form-control" readonly name="subtotal[]" placeholder="subtotal" value="{{$s_item->total_price}}" type="number" /></td>
                                     <td><i class="tf-icons ti ti-xbox-x text-danger cursor-pointer removeRow"></i></td>
                                 </tr>
                                 @endforeach
@@ -88,7 +82,7 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
                             <tfoot>
                                 <tr>
                                     <td colspan="4"></td>
-                                    <td>Total: <input type="hidden" name="total" id="hiddenTotal" value="0.00"></td>
+                                    <td >Total: <input type="hidden" name="total" id="hiddenTotal" value="0.00"></td>
                                     <td id="total">{{ isset($data) ? $data->total :'0.00'}}</td>
                                 </tr>
                             </tfoot>
@@ -138,15 +132,13 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
 
             var newRow = $('<tr>');
             newRow.append(`<td class="productName"> ${slected_product.name} <input class="productName form-control" hidden required name="product_id[]" placeholder="Product Name" value="${slected_product.id }"/></td>`);
-            newRow.append(`<td><input class="batch_no form-control" required name="batch_no[]" placeholder="batch no" /></td>`);
-            newRow.append(`<td><input class="purchase_price form-control" required name="purchase_price[]" placeholder="purchase_price" value="${slected_product.purchase_price}" type="number" /></td>`);
-            newRow.append(`<td><input class="sales_price form-control" required name="sales_price[]" placeholder="sales_price" value="${slected_product.sales_price}"  type="number" /></td>`);
-            newRow.append(`<td><input class="qty form-control" required name="qty[]" placeholder="qty" type="number" /></td>`);
+            newRow.append(`<td><input class="price form-control" required name="price[]" placeholder="price" value="${slected_product.sales_price}" type="number" /></td>`);
+            newRow.append(`<td><input class="abaliable_qty form-control" required name="abaliable_qty[]" value="${slected_product.stock_quantity}" disabled placeholder="abaliable qty" type="number" /></td>`);
+            newRow.append(`<td><input class="qty form-control" required name="qty[]" placeholder="qty" type="number" min="1" max="${slected_product.stock_quantity}" /></td>`);
             newRow.append(`<td><input class="subtotal form-control" readonly name="subtotal[]" placeholder="subtotal" type="number" /></td>`);
             newRow.append(`<td><i class="tf-icons ti ti-xbox-x text-danger cursor-pointer removeRow"></i></td>`);
             newRow.appendTo('#productTable tbody');
             $('#product').val('').trigger('change'); // Clear the product selection
-
         });
 
         // Remove row on icon click
@@ -164,8 +156,17 @@ $title = (isset($data) ? 'Edit ' : 'Add ') .  $route;
 
         // Function to update subtotal
         function updateSubtotal(row) {
-            var purchasePrice = parseFloat(row.find('.purchase_price').val()) || 0;
+            var purchasePrice = parseFloat(row.find('.price').val()) || 0;
             var qty = parseInt(row.find('.qty').val()) || 0;
+            var abaliable_qty = parseInt(row.find('.abaliable_qty').val()) || 0;
+            if (qty > abaliable_qty) {
+                alert('Qty Must not Gretter then abaliable_qty')
+                row.find('.qty').val(abaliable_qty);
+            }
+            if (qty <= 0) {
+                alert('Qty Must not less then 0')
+                row.find('.qty').val('');
+            }
             var subtotal = purchasePrice * qty;
             row.find('.subtotal').val(subtotal.toFixed(2));
         }

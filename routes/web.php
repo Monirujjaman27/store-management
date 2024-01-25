@@ -53,7 +53,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/customers', CustomerController::class);
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/purchase', PurchaseController::class);
+    Route::get('/purchase-invoice-delete/{id}', [PurchaseController::class, 'delete_purchase_item'])->name('delete_purchase_item');
+    Route::get('/purchase-print-invoice/{id}', [PurchaseController::class, 'print_invoice'])->name('purchase_print_invoice');
+    
     Route::resource('/sale', SaleController::class);
+    Route::get('/sale-invoice-delete/{id}', [SaleController::class, 'delete_sale_item'])->name('delete_sale_item');
+    Route::get('/sale-print-invoice/{id}', [SaleController::class, 'print_invoice'])->name('sale_print_invoice');
 
     // money management 
     Route::resource('/borrowers', BorrowerController::class);

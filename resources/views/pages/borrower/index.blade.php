@@ -70,6 +70,7 @@ $route = 'borrowers';
                     <th>Total Return</th>
                     <th>Gender</th>
                     <th>Address</th>
+                    <th>created date</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,6 +81,7 @@ $route = 'borrowers';
                         <div class="dropdown">
                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>
                             <div class="dropdown-menu">
+                                <a class="text-info dropdown-item" href='{{route("$route.show", $item->id)}}'><i class="bi bi-eye"></i> View</a>
                                 <a class="text-primary dropdown-item" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i> Edit</a>
                                 <form action='{{ route("$route.destroy",$item->id)}}' method="post">
                                     @csrf
@@ -101,7 +103,7 @@ $route = 'borrowers';
                     <td>{{$item->total_return}}</td>
                     <td>{{$item->gender}}</td>
                     <td>{{$item->address}}</td>
-
+                    <td>{{ $item->created_at->format('d-m-Y h:i a') }}</td>
                 </tr>
                 @endforeach
             </tbody>

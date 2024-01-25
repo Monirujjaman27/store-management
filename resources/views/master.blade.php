@@ -83,7 +83,7 @@
               <?php
               $data = App\Models\AdminSetting::get();
               ?>
-              @if($data->where('slug','site_name')->first())
+              @if($data->where('slug','site_logo')->first())
               <img src="{{$data->where('slug','site_logo')->first()->value}}" alt="Logo">
               @else
               <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,18 +157,18 @@
               <div>Purchase</div>
             </a>
           </li>
-          <li class="menu-item {{Request::route()->getName() == 'sale.index' ? 'active':''}}">
-            <a href="{{route('suppliers.index')}}" class="menu-link">
+          <li class="menu-item {{Request::route()->getName() == 'sale.index' || request()->is('sale*') ? 'active':''}}">
+            <a href="{{route('sale.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-report-analytics"></i>
               <div>Sale</div>
             </a>
           </li>
-          <li class="menu-item {{Request::route()->getName() == 'sale.index' || request()->is('suppliers*') ? 'active':''}}">
+          <!-- <li class="menu-item {{Request::route()->getName() == '' || request()->is('suppliers*') ? 'active':''}}">
             <a href="{{route('suppliers.index')}}" class="menu-link">
               <i class="menu-icon tf-icons ti ti-report-money"></i>
               <div>Report</div>
             </a>
-          </li>
+          </li> -->
           <!-- Misc -->
           <li class="menu-header small text-uppercase">
             <span class="menu-header-text">lends Management</span>
@@ -196,12 +196,12 @@
               </li>
               <li class="menu-item {{Request::route()->getName() == 'borrower-transection.index' ? 'active':''}}">
                 <a href="{{route('borrower-transection.index')}}" class="menu-link">
-                  <div>Transections</div>
+                  <div>Transactions</div>
                 </a>
               </li>
               <li class="menu-item {{Request::route()->getName() == 'borrower-transection.create' ? 'active':''}}">
                 <a href="{{route('borrower-transection.create')}}" class="menu-link">
-                  <div>New Transection</div>
+                  <div>New Transaction</div>
                 </a>
               </li>
             </ul>
@@ -426,6 +426,8 @@
 
   <!-- Main JS -->
   <script src="{{asset('/')}}assets/js/main.js"></script>
+
+  @stack('page_script')
 </body>
 
 </html>

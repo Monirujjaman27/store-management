@@ -4,219 +4,240 @@
 $route = 'borrowers';
 ?>
 <div class="row">
+  <div class="col-md-12">
+    <div class="row mb-3">
+      <form action="{{route('dashboard.index')}}">
+        <div class="col-sm-12 col-md-6 m-auto">
+          <div class="row">
+            <div class="col-8">
+              <!-- <input type="search" name="search_query" class="form-control" value="{{request()->search_query}}" placeholder="Search"> -->
+              <input type="text" name="date_range" value="{{request('date_range')}}" class="form-control w-100" style="min-width: 318px !important;" placeholder="YYYY-MM-DD to YYYY-MM-DD" id="flatpickr-range" />
+            </div>
+            <div class="col-2">
+              <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div>
+            <div class="col-2">
+              <a class="btn btn-warning px-2" href='{{route("dashboard.index")}}'>Reset</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
   <!-- Sales last year -->
   <div class="col-xl-2 col-md-4 col-6 mb-4">
     <div class="card">
       <div class="card-header pb-0">
-        <h5 class="card-title mb-0">Sales</h5>
-        <small class="text-muted">Last Year</small>
+        <h5 class="card-title mb-0">Products</h5>
       </div>
       <div id="salesLastYear"></div>
       <div class="card-body pt-0">
         <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
-          <h4 class="mb-0">175k</h4>
-          <small class="text-danger">-16.2%</small>
+          <h4 class="mb-0">{{$data['products']->count()}}</h4>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Sessions Last month -->
   <div class="col-xl-2 col-md-4 col-6 mb-4">
     <div class="card">
       <div class="card-header pb-0">
-        <h5 class="card-title mb-0">Sessions</h5>
-        <small class="text-muted">Last Month</small>
+        <h5 class="card-title mb-0">Customers</h5>
       </div>
-      <div class="card-body">
-        <div id="sessionsLastMonth"></div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
         <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
-          <h4 class="mb-0">45.1k</h4>
-          <small class="text-success">+12.6%</small>
+          <h4 class="mb-0">{{$data['customers']->count()}}</h4>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Total Profit -->
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h5 class="card-title mb-0">Suppliers</h5>
+      </div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
+        <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
+          <h4 class="mb-0">{{$data['suppliers']->count()}}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h5 class="card-title mb-0">Purchase</h5>
+      </div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
+        <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
+          <h4 class="mb-0">{{$data['purchase']->count()}}</h4>
+          <small class="text-success"><?= $data['purchase']->sum('total')  ?> TK</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h5 class="card-title mb-0">Sales</h5>
+      </div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
+        <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
+          <h4 class="mb-0">{{$data['sales']->count()}}</h4>
+          <small class="text-success"><?= $data['sales']->sum('total')  ?> TK</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h5 class="card-title mb-0">Net</h5>
+      </div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
+        <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
+          <h4 class="mb-0"><?= $data['purchase']->sum('total')  - $data['sales']->sum('total') ?> TK</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-header pb-0">
+        <h5 class="card-title mb-0">Borrowers</h5>
+      </div>
+      <div id="salesLastYear"></div>
+      <div class="card-body pt-0">
+        <div class="d-flex justify-content-between align-items-center mt-3 gap-3">
+          <h4 class="mb-0"><?= $data['borrowers']->count()  ?></h4>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="col-xl-2 col-md-4 col-6 mb-4">
     <div class="card">
       <div class="card-body">
-        <div class="badge p-2 bg-label-danger mb-2 rounded">
-          <i class="ti ti-currency-dollar ti-md"></i>
-        </div>
-        <h5 class="card-title mb-1 pt-2">Total Profit</h5>
-        <small class="text-muted">Last week</small>
-        <p class="mb-2 mt-1">1.28k</p>
-        <div class="pt-1">
-          <span class="badge bg-label-secondary">-12.2%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Total Sales -->
-  <div class="col-xl-2 col-md-4 col-6 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <div class="badge p-2 bg-label-info mb-2 rounded"><i class="ti ti-chart-bar ti-md"></i></div>
-        <h5 class="card-title mb-1 pt-2">Total Sales</h5>
-        <small class="text-muted">Last week</small>
-        <p class="mb-2 mt-1">$4,673</p>
-        <div class="pt-1">
-          <span class="badge bg-label-secondary">+25.2%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Last Transaction -->
-  <div class="col-lg-12 mb-4 mb-lg-0">
-    <div class="card h-100">
-      <div class="card-header d-flex justify-content-between">
-        <h5 class="card-title m-0 me-2">Last Transaction</h5>
-        <div class="dropdown">
-          <button class="btn p-0" type="button" id="teamMemberList" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="ti ti-dots-vertical ti-sm text-muted"></i>
-          </button>
-          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="teamMemberList">
-            <a class="dropdown-item" href="javascript:void(0);">Download</a>
-            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-            <a class="dropdown-item" href="javascript:void(0);">Share</a>
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>Transections</span>
+            <div class="d-flex align-items-center my-2">
+              <h3 class="mb-0 me-2"><?= $data['total_transections']->count() ?></h3>
+            </div>
           </div>
         </div>
       </div>
-      <div class="table-responsive">
-        <table class="table table-borderless border-top">
-          <thead class="border-bottom">
-            <tr>
-              <th>CARD</th>
-              <th>DATE</th>
-              <th>STATUS</th>
-              <th>TREND</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="d-flex justify-content-start align-items-center">
-                  <div class="me-3">
-                    <img src="../../assets/img/icons/payments/visa-img.png" alt="Visa" height="30" />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <p class="mb-0 fw-medium">*4230</p>
-                    <small class="text-muted">Credit</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex flex-column">
-                  <p class="mb-0 fw-medium">Sent</p>
-                  <small class="text-muted text-nowrap">17 Mar 2022</small>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Verified</span></td>
-              <td>
-                <p class="mb-0 fw-medium">+$1,678</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="d-flex justify-content-start align-items-center">
-                  <div class="me-3">
-                    <img src="../../assets/img/icons/payments/master-card-img.png" alt="Visa" height="30" />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <p class="mb-0 fw-medium">*5578</p>
-                    <small class="text-muted">Credit</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex flex-column">
-                  <p class="mb-0 fw-medium">Sent</p>
-                  <small class="text-muted text-nowrap">12 Feb 2022</small>
-                </div>
-              </td>
-              <td><span class="badge bg-label-danger">Rejected</span></td>
-              <td>
-                <p class="mb-0 fw-medium">-$839</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="d-flex justify-content-start align-items-center">
-                  <div class="me-3">
-                    <img src="../../assets/img/icons/payments/american-express-img.png" alt="Visa" height="30" />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <p class="mb-0 fw-medium">*4567</p>
-                    <small class="text-muted">Credit</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex flex-column">
-                  <p class="mb-0 fw-medium">Sent</p>
-                  <small class="text-muted text-nowrap">28 Feb 2022</small>
-                </div>
-              </td>
-              <td><span class="badge bg-label-success">Verified</span></td>
-              <td>
-                <p class="mb-0 fw-medium">+$435</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="d-flex justify-content-start align-items-center">
-                  <div class="me-3">
-                    <img src="../../assets/img/icons/payments/visa-img.png" alt="Visa" height="30" />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <p class="mb-0 fw-medium">*5699</p>
-                    <small class="text-muted">Credit</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex flex-column">
-                  <p class="mb-0 fw-medium">Sent</p>
-                  <small class="text-muted text-nowrap">8 Jan 2022</small>
-                </div>
-              </td>
-              <td><span class="badge bg-label-secondary">Pending</span></td>
-              <td>
-                <p class="mb-0 fw-medium">+$2,345</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="d-flex justify-content-start align-items-center">
-                  <div class="me-3">
-                    <img src="../../assets/img/icons/payments/visa-img.png" alt="Visa" height="30" />
-                  </div>
-                  <div class="d-flex flex-column">
-                    <p class="mb-0 fw-medium">*5699</p>
-                    <small class="text-muted">Credit</small>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex flex-column">
-                  <p class="mb-0 fw-medium">Sent</p>
-                  <small class="text-muted text-nowrap">8 Jan 2022</small>
-                </div>
-              </td>
-              <td><span class="badge bg-label-danger">Rejected</span></td>
-              <td>
-                <p class="mb-0 fw-medium">-$234</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    </div>
+  </div>
+
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>lends</span>
+            <div class="d-flex align-items-center my-2">
+              <h3 class="mb-0 me-2"><?= $data['lends']->count() ?></h3>
+              <p class="text-success mb-0">
+                <?= $data['lends']->sum('transection_amount') ?>TK</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+  <div class="col-xl-2 col-md-4 col-6 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>Return lends</span>
+            <div class="d-flex align-items-center my-2">
+              <h3 class="mb-0 me-2"><?= $data['return_lends']->count() ?></h3>
+              <p class="text-success mb-0">
+                <?= $data['return_lends']->sum('transection_amount') ?>TK</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-sm-6 col-xl-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="content-left">
+            <span>Net Amount</span>
+            <div class="d-flex align-items-center my-2">
+              <p class="text-success mb-0"><?= $data['return_lends']->sum('transection_amount') - $data['lends']->sum('transection_amount')  ?? 0 ?>TK</p>
+            </div>
+          </div>
+          <div class="avatar">
+            <span class="avatar-initial rounded bg-label-primary">
+              <i class="ti ti-user ti-sm"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+
+<!-- Last Transaction -->
+<div class="col-lg-12 mb-4 mb-lg-0">
+  <div class="card h-100">
+    <div class="card-header d-flex justify-content-between">
+      <h5 class="card-title m-0 me-2">Recent lends Transaction</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-borderless border-top">
+        <thead class="border-bottom">
+          <tr>
+            <th>#ID</th>
+            <th>Actions</th>
+            <th>Borrower</th>
+            <th>type</th>
+            <th>transection id</th>
+            <th>amount</th>
+            <th>note</th>
+            <th>created date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($data['recent_transections'] as $item)
+          <tr>
+            <td>{{$item->id}}</td>
+            <td>
+              <div class="dropdown">
+                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="ti ti-dots-vertical"></i></button>
+                <div class="dropdown-menu">
+                  <a class="text-primary dropdown-item" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i> Edit</a>
+                  <form action='{{ route("$route.destroy",$item->id)}}' method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button onclick="return confirm('Are you sure to delete')" type="submit" class="dropdown-item btn-danger text-danger"><i class="bi bi-trash"></i> Delete</button>
+                  </form>
+                </div>
+              </div>
+            </td>
+            <td>{{$item->borrower->name}}</td>
+            <td>{{$item->type}}</td>
+            <td>{{$item->transection_id}}</td>
+            <td>{{$item->transection_amount}}</td>
+            <td>{{$item->note}}</td>
+            <td>{{ $item->created_at->format('d-m-Y h:i a') }}</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 </div>
 @endsection

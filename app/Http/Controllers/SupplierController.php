@@ -59,6 +59,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
+
         return view("$this->tamplate.addEdit");
     }
 
@@ -144,8 +145,6 @@ class SupplierController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:512', // image rule with allowed mime types and maximum size
         ]);
         try {
-            // dd($request->all());
-
             $data = $this->model->find($id);
             if (!$data) return error_message('Data Not found');
             $data->name = $request->name;

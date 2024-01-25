@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create('sales_items', function (Blueprint $table) {
             $table->id();
-            $table->string('inv_no');
             $table->foreignId('customer_id')->reference('id')->on('customers');
-            $table->double('total');
-            $table->double('subtotal');
-            $table->double('paid_amount')->nullable();
-            $table->double('due_amount')->nullable();
-            $table->string('status')->default(STATUS_PAID)->comment(STATUS_PAID, STATUS_DUE);
+            $table->foreignId('sale_id')->reference('id')->on('sales')->onDelete('cascade');
+            $table->foreignId('product_id')->reference('id')->on('products');
+            $table->integer('qty')->default(0);
+            $table->double('price');
+            $table->double('total_price');
             $table->timestamps();
+
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales');
+        Schema::dropIfExists('sales_items');
     }
 };

@@ -134,6 +134,7 @@ $route = 'borrower-transection';
                     <th>transection id</th>
                     <th>amount</th>
                     <th>note</th>
+                    <th>created date</th>
                 </tr>
             </thead>
             <tbody>
@@ -158,6 +159,7 @@ $route = 'borrower-transection';
                     <td>{{$item->transection_id}}</td>
                     <td>{{$item->transection_amount}}</td>
                     <td>{{$item->note}}</td>
+                    <td>{{ $item->created_at->format('d-m-Y h:i a') }}</td>
                 </tr>
                 @endforeach
             </tbody>

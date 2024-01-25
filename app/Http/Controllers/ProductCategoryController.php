@@ -175,9 +175,9 @@ class ProductCategoryController extends Controller
     public function destroy($id)
     {
         try {
-            $data =  $this->model->with('child_category')->find($id);
+            $data =  $this->model->with('child_category', 'products')->find($id);
             if (!$data) return error_message('data Not Found');
-            if ($data->child_category->count() > 0) return error_message("Unable to delete data against the relation.");
+            if ($data->child_category->count() > 0 || $data->products->count() > 0) return error_message("Unable to delete data against the relation.");
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

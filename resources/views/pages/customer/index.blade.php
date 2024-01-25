@@ -44,6 +44,7 @@ $route = 'customers';
                     <th>Phone</th>
                     <th>Gender</th>
                     <th>Address</th>
+                    <th>created date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -60,6 +61,7 @@ $route = 'customers';
                     <td>{{$item->phone}}</td>
                     <td>{{$item->gender}}</td>
                     <td>{{$item->address}}</td>
+                    <td>{{ $item->created_at->format('d-m-Y h:i a') }}</td>
                     <td>
                         <div class="d-flex">
                             <a class="btn btn-sm btn-primary" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i></a>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Borrower;
+use App\Models\BorrowerTransectionHistorey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -100,8 +101,11 @@ class BorrowerController extends Controller
     public function show($id)
     {
         try {
-            // $this->model->find($id)->update(['status' => DB::raw("IF(status = 1, 0 ,1)")]);
-            // notify()->success("Delete Successfully");
+            $data = $this->model->find($id);
+            $lends =  BorrowerTransectionHistorey::where(['borrower_id' => $id, 'type' => 'credit'])->get();
+            $return_lends =  BorrowerTransectionHistorey::where(['borrower_id' => $id, 'type' => 'debit'])->get();
+            if (!$data) return abort(404);
+            return view("$this->tamplate.view", compact('data', 'lends', 'return_lends'));
             return back();
         } catch (\Throwable $th) {
             notify()->warning($th->getMessage());

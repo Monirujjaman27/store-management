@@ -31,6 +31,10 @@ function fileUpload($new_file, $path, $old_file_name = NULL)
     return $path . '/' . $file_name;
 }
 
+function date_time_format($date)
+{
+    return Carbon::parse($date)->format('d-m-Y h:i a');
+}
 /*
 *👉 format date
 * manager_id requared 

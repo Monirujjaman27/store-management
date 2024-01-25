@@ -47,6 +47,7 @@ $route = 'products';
                     <th>offer price</th>
                     <th>stock quantity</th>
                     <th>sales quantity</th>
+                    <th>created at</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -74,6 +75,7 @@ $route = 'products';
                     <td>{{$item->offer_price}}</td>
                     <td>{{$item->stock_quantity}}</td>
                     <td>{{$item->sales_quantity}}</td>
+                    <td>{{ $item->created_at->format('d-m-Y h:i a') }}</td>
                     <td>
                         <div class="d-flex">
                             <a class="btn btn-sm btn-primary" href='{{route("$route.edit", $item->id)}}'><i class="bi bi-pencil-square"></i></a>
