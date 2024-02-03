@@ -82,7 +82,7 @@ class BorrowerController extends Controller
             $data->gender = $request->gender;
             $data->address = $request->address;
             $data->phone = $request->phone;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, 'upload/customer/avater');
+            if ($request->has('image')) $data->avater = fileUpload($request->image, 'uploads/customer/avater');
             $data->save();
             notify()->success("Created Successfully");
             return redirect()->route("$this->routename");
@@ -154,7 +154,7 @@ class BorrowerController extends Controller
             $data->phone = $request->phone;
             $data->gender = $request->gender;
             $data->address = $request->address;
-            if ($request->has('image')) $data->avater = fileUpload($request->image, 'upload/customer/avater', $data->avater);
+            if ($request->has('image')) $data->avater = fileUpload($request->image, 'uploads/customer/avater', $data->avater);
             $data->save();
             notify()->success("Updated Successfully");
             return redirect()->route("$this->routename");

@@ -39,7 +39,6 @@ class SystemSettingController extends Controller
                     $value = fileUpload($request->site_logo, 'uploads/logo', $request->old_site_logo);
                     $this->updateOrCreateSetting($key, $value);
                 }
-
                 // other inputs 
                 if (!empty($value) && $key !== 'old_site_logo') $this->updateOrCreateSetting($key, $value);
             }
