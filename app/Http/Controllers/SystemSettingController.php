@@ -36,7 +36,7 @@ class SystemSettingController extends Controller
             foreach ($request->all() as $key => $value) {
                 // logo upload 
                 if ($key == 'site_logo') {
-                    $value = fileUpload($request->site_logo, 'uploads/logo/', $request->old_site_logo);
+                    $value = fileUpload($request->site_logo, 'uploads/logo', $request->old_site_logo);
                     $this->updateOrCreateSetting($key, $value);
                 }
 

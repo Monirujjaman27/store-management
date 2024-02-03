@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Login Basic - Pages | Vuexy - Bootstrap Admin Template</title>
+    <title>Simple Store and lend Management</title>
 
     <meta name="description" content="" />
 
@@ -50,7 +50,6 @@
 
 <body>
     <!-- Content -->
-
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner py-4">
@@ -62,9 +61,9 @@
                             <a href="{{route('dashboard.index')}}" class="app-brand-link">
                                 <span class="app-brand-logo demo">
                                     <?php
-                                    $data = App\Models\AdminSetting::get();
+                                    $data = App\Models\AdminSetting::select('slug', 'value')->get();
                                     ?>
-                                    @if($data->where('slug','site_name')->first())
+                                    @if($data && $data->where('slug','site_logo')->first())
                                     <img src="{{$data->where('slug','site_logo')->first()->value}}" alt="Logo">
                                     @else
                                     <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,7 +74,7 @@
                                     </svg>
                                     @endif
                                 </span>
-                                <span class="app-brand-text demo menu-text fw-bold">{{$data->where('slug','site_name')->first() ? $data->where('slug','site_name')->first()->value : 'Vuexy'}}</span>
+                                <span class="app-brand-text demo menu-text fw-bold">{{$data && $data->where('slug','site_name')->first() ? $data->where('slug','site_name')->first()->value : 'Vuexy'}}</span>
                             </a>
                         </div>
                         <!-- /Logo -->
@@ -87,7 +86,7 @@
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email or Username</label>
                                 @if($errors->has('email')) <br><small class="text-danger"> {{$errors->first('email')}}</small> @endif
-                                <input type="email" class="form-control" id="email" name="email" value="{{old('email')}}" placeholder="Enter your email or username" autofocus>
+                                <input type="email" class="form-control" id="email" name="email" value="user@gmail.com" placeholder="Enter your email or username" autofocus>
                             </div>
                             <div class="mb-3 form-password-toggle">
                                 <div class="d-flex justify-content-between">
@@ -98,7 +97,7 @@
                                 </div>
                                 <div class="input-group input-group-merge">
                                     @if($errors->has('password'))<scpan class="text-danger"> {{$errors->first('password')}}</scpan> @endif
-                                    <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                    <input type="password" id="password" class="form-control" name="password" value="123456" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                                     <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
                                 </div>
                             </div>

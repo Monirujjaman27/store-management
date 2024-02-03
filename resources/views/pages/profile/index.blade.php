@@ -21,11 +21,11 @@
                     <label for="">Change Password</label>
                     <div class="form-group">
                         <label class="form-label" for="password">New Pssword @if($errors->has('password'))<span class="text-danger"> {{$errors->first('password')}}</span> @endif</label>
-                        <input type="text" value="" name="password" id="password" placeholder="new password" type="password" class="form-control" />
+                        <input type="text" disabled value="" name="password" id="password" placeholder="new password" type="password" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="password_confirmation">password confirmation @if($errors->has('password_confirmation'))<span class="text-danger"> {{$errors->first('password_confirmation')}}</span> @endif</label>
-                        <input type="text" value="" name="password_confirmation" id="password_confirmation" placeholder="confirm password" type="password" class="form-control" />
+                        <input type="text" disabled value="" name="password_confirmation" id="password_confirmation" placeholder="confirm password" type="password" class="form-control" />
                     </div>
                     <input type="submit" value="Update Password" class="btn btn-outline-primary btn-sm mt-1 float-right">
                 </form>

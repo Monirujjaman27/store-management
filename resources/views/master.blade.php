@@ -81,10 +81,10 @@
           <a href="{{route('dashboard.index')}}" class="app-brand-link">
             <span class="app-brand-logo demo">
               <?php
-              $data = App\Models\AdminSetting::get();
+              $sys_data = App\Models\AdminSetting::get();
               ?>
-              @if($data->where('slug','site_logo')->first())
-              <img src="{{$data->where('slug','site_logo')->first()->value}}" alt="Logo">
+              @if($sys_data->where('slug','site_logo')->first())
+              <img src="{{asset($sys_data->where('slug','site_logo')->first()->value)}}" alt="">
               @else
               <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z" fill="#7367F0" />
@@ -94,14 +94,13 @@
               </svg>
               @endif
             </span>
-            <span class="app-brand-text demo menu-text fw-bold">{{$data->where('slug','site_name')->first() ? $data->where('slug','site_name')->first()->value : 'Vuexy'}}</span>
+            <span class="app-brand-text demo menu-text fw-bold">{{$sys_data->where('slug','site_name')->first() ? $sys_data->where('slug','site_name')->first()->value : 'Vuexy'}}</span>
           </a>
           <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
             <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
             <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
           </a>
         </div>
-
         <div class="menu-inner-shadow"></div>
 
         <ul class="menu-inner py-1">
