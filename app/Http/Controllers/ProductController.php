@@ -21,7 +21,7 @@ class ProductController extends Controller
         $this->model = new Product();
         $this->routename = "products.index";
         $this->tamplate = "pages.products";
-        $this->upload_file_path = "upload/$this->db_table";
+        $this->upload_file_path = "uploads/$this->db_table";
     }
     /**
      * Display a listing of the resource.
@@ -103,7 +103,7 @@ class ProductController extends Controller
             if ($request->images && count($request->images) > 0) {
                 $images = [];
                 foreach ($request->images as $key => $img_item) {
-                    $images[] = fileUpload($img_item, 'product/images');
+                    $images[] = fileUpload($img_item, $this->upload_file_path);
                 }
                 $data->images =  json_encode($images);
             }
@@ -197,6 +197,11 @@ class ProductController extends Controller
             $data =  $this->model->with('purchase_items', 'sales_items')->find($id);
             if (!$data) return error_message('data Not Found');
             if ($data->purchase_items->count() > 0 || $data->sales_items->count() > 0) return error_message("Unable to delete data against the relation.");
+            if ($data->images) {
+                foreach (json_decode($data->images) as $image) {
+                    unlink_image($image);
+                }
+            }
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

@@ -9,9 +9,15 @@
   <title>Small Business Application for Rabbi</title>
 
   <meta name="description" content="" />
-
+  <?php
+  $sys_data = App\Models\AdminSetting::get();
+  ?>
   <!-- Favicon -->
+  @if($sys_data->where('slug','site_logo')->first())
+  <link rel="icon" type="image/x-icon" href="{{asset($sys_data->where('slug','site_logo')->first()->value)}}" />
+  @else
   <link rel="icon" type="image/x-icon" href="{{asset('/')}}assets/img/favicon/favicon.ico" />
+  @endif
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -80,9 +86,7 @@
         <div class="app-brand demo">
           <a href="{{route('dashboard.index')}}" class="app-brand-link">
             <span class="app-brand-logo demo">
-              <?php
-              $sys_data = App\Models\AdminSetting::get();
-              ?>
+
               @if($sys_data->where('slug','site_logo')->first())
               <img src="{{asset($sys_data->where('slug','site_logo')->first()->value)}}" alt="">
               @else

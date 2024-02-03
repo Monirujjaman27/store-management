@@ -19,7 +19,7 @@ class ProductCategoryController extends Controller
         $this->model = new ProductCategory();
         $this->routename = "product-category.index";
         $this->tamplate = "pages.product-category";
-        $this->upload_file_path = "upload/$this->db_table";
+        $this->upload_file_path = "uploads/$this->db_table";
     }
     /**
      * Display a listing of the resource.
@@ -178,6 +178,7 @@ class ProductCategoryController extends Controller
             $data =  $this->model->with('child_category', 'products')->find($id);
             if (!$data) return error_message('data Not Found');
             if ($data->child_category->count() > 0 || $data->products->count() > 0) return error_message("Unable to delete data against the relation.");
+            unlink_image($data->image);
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

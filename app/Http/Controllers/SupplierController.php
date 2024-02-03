@@ -174,6 +174,7 @@ class SupplierController extends Controller
         try {
             $data  = $this->model->with('manager', 'customer', 'sub_zone')->find($id);
             if ($data->upazila->count() > 0 | $data->customer->count() > 0 | $data->sub_zone->count() > 0) return error_message('data cannot be delete');
+            unlink_image($data->avater);
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

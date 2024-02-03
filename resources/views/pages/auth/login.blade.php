@@ -9,15 +9,19 @@
     <title>Simple Store and lend Management</title>
 
     <meta name="description" content="" />
-
+    <?php
+    $data = App\Models\AdminSetting::select('slug', 'value')->get();
+    ?>
     <!-- Favicon -->
+    @if($data->where('slug','site_logo')->first())
+    <link rel="icon" type="image/x-icon" href="{{asset($data->where('slug','site_logo')->first()->value)}}" />
+    @else
     <link rel="icon" type="image/x-icon" href="{{asset('/')}}assets/img/favicon/favicon.ico" />
-
+    @endif
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap" rel="stylesheet" />
-
     <!-- Icons -->
     <link rel="stylesheet" href="{{asset('/')}}assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="{{asset('/')}}assets/vendor/fonts/tabler-icons.css" />
@@ -60,9 +64,7 @@
                         <div class="app-brand justify-content-center mb-4 mt-2">
                             <a href="{{route('dashboard.index')}}" class="app-brand-link">
                                 <span class="app-brand-logo demo">
-                                    <?php
-                                    $data = App\Models\AdminSetting::select('slug', 'value')->get();
-                                    ?>
+
                                     @if($data && $data->where('slug','site_logo')->first())
                                     <img src="{{$data->where('slug','site_logo')->first()->value}}" alt="Logo">
                                     @else

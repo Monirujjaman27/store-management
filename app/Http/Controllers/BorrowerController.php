@@ -173,8 +173,9 @@ class BorrowerController extends Controller
     public function destroy($id)
     {
         try {
-            $data  = $this->model->with('manager', 'customer', 'sub_zone')->find($id);
-            if ($data->upazila->count() > 0 | $data->customer->count() > 0 | $data->sub_zone->count() > 0) return error_message('data cannot be delete');
+            $data  = $this->model->with('borrower_transection_historey')->find($id);
+            if ($data->borrower_transection_historey->count() > 0) return error_message('data cannot be delete');
+            unlink_image($data->avater);
             $data->delete();
             notify()->success("Delete Successfully");
             return back();

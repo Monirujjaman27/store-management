@@ -9,4 +9,7 @@ class Borrower extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    function borrower_transection_historey() {
+        return $this->hasMany(BorrowerTransectionHistorey::class);
+    }
 }

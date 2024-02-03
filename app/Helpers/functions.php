@@ -11,6 +11,14 @@ function error_message($ms)
     return back();
 }
 
+
+// 👉 delete image
+function unlink_image($file_path_name)
+{
+    if (isset($file_path_name) && $file_path_name != "" && file_exists($file_path_name)) unlink($file_path_name);
+};
+
+
 //👉 global file upload method
 function fileUpload($new_file, $path, $old_file_name = NULL)
 {
